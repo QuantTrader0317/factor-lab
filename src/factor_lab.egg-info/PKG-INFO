@@ -1,0 +1,70 @@
+Metadata-Version: 2.4
+Name: factor-lab
+Version: 0.1.0
+Summary: From-scratch factor models: Fama-French, rolling betas, and CLI over real market data.
+Author: Clyde Williams
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.26
+Requires-Dist: pandas>=2.1
+Requires-Dist: statsmodels>=0.14
+Requires-Dist: matplotlib>=3.7
+Requires-Dist: click>=8.1
+Requires-Dist: yfinance>=0.2.50
+Provides-Extra: dev
+Requires-Dist: pytest>=8; extra == "dev"
+Requires-Dist: hypothesis>=6; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"
+Requires-Dist: ruff>=0.5; extra == "dev"
+Requires-Dist: black>=24; extra == "dev"
+Requires-Dist: pre-commit>=3; extra == "dev"
+Requires-Dist: jupyter>=1; extra == "dev"
+Dynamic: license-file
+
+# factor-lab
+
+From-scratch **factor models** you can read and extend. Core goals:
+- Regress asset returns on factors (Fama–French 3/5).
+- Compute **rolling betas** with windowed OLS.
+- Provide a simple **CLI** over yfinance + Fama–French.
+- Ship with **tests**, **types**, **CI**, and a **sample factor CSV** so you can run offline.
+
+> Use this as a portfolio piece to show econometrics, matrix algebra, and clean engineering.
+
+## Install
+```bash
+python -m venv .venv
+# Windows
+. .venv\Scripts\Activate.ps1
+# macOS/Linux
+# source .venv/bin/activate
+
+pip install -e ".[dev]"
+pre-commit install
+pytest -q
+```
+
+## CLI quickstart
+```bash
+# With sample monthly FF3 included in repo (offline demo)
+factorlab ff3 --tickers AAPL MSFT --start 2022-01-01 --end 2023-12-31 --freq M --ff-source sample --ff-sample-path data/sample_ff3_monthly.csv
+
+# If you want real Fama-French download and daily data (requires internet)
+factorlab ff3 --tickers AAPL --start 2018-01-01 --end 2024-12-31 --freq M --ff-source download
+```
+
+## What’s inside
+- `factorlab/data.py`: loaders for Fama–French factors, yfinance prices, and return processing (excess returns).
+- `factorlab/models.py`: OLS + HAC (Newey–West) options, FF3 helper.
+- `factorlab/rolling.py`: rolling window betas.
+- `factorlab/plots.py`: matplotlib plots for exposures.
+- `tests/`: synthetic tests with known coefficients + sample FF3 parsing.
+
+## Roadmap
+- Add FF5, Carhart momentum.
+- Add robust covariance options (HAC lags auto).
+- Add Black–Litterman under `portfolio/`.
+
+## License
+MIT
